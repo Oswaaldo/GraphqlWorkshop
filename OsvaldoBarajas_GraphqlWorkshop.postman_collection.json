@@ -1,0 +1,435 @@
+{
+	"info": {
+		"_postman_id": "b60988b1-2c25-410b-9aad-70d9c63a0c1a",
+		"name": "OsvaldoBarajas_GraphqlWorkshop",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "CreateNewProject",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "de553769-612f-45f2-b878-066322bc7609",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"let idProject = jsonData.data.addProject.id;",
+							"let nameProject = jsonData.data.addProject.name;",
+							"",
+							"pm.environment.set(\"id_project\", idProject);",
+							"pm.environment.set(\"name_Project\", nameProject);",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"pm.test(\"Verify project name stored\", function () {",
+							"    pm.expect(nameProject).to.eql(pm.environment.get(\"name_Project\"));",
+							"});",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "QA2020",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation addProject($project: ProjectInput!){\n  addProject(project:$project){\n    id,\n    name\n  }\n}",
+						"variables": "{\n  \"project\": {\n    \"name\": \"test\"\n  }\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddTodo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "e7dac190-f52c-428f-a220-e421c125fe60",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"let idTodo = jsonData.data.addTodo.id;",
+							"let todo = jsonData.data.addTodo.todo;",
+							"",
+							"pm.environment.set(\"id_todo\", idTodo);",
+							"pm.environment.set(\"todo\", todo);",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"pm.test(\"Verify Todo stored\", function () {",
+							"    pm.expect(todo).to.eql(pm.environment.get(\"todo\"));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation addTodo($todo: TodoInput!){\n  addTodo(todo: $todo){\n    id,\n    todo,\n    status\n  }\n}",
+						"variables": "{\n\t\"todo\": {\n\t\t\"todo\": \"todo test\",\n\t\t\"projectId\": \"{{id_project}}\"\n\t}\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateTodo",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "f3195e22-328e-4420-9a6f-dadb53cc2973",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"let todo = jsonData.data.updateTodo.todo;",
+							"",
+							"pm.environment.set(\"todo\", todo);",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"pm.test(\"Verify Todo updated\", function () {",
+							"    pm.expect(todo).to.eql(pm.environment.get(\"todo\"));",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation updateTodo($todo:String!){\n    updateTodo(todoId: \"{{id_todo}}\", todo: $todo){\n        id,\n        todo,\n        status\n    }\n}",
+						"variables": "{\n\t\"todo\": \"Todo Updated\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddFirstComment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "9654854b-8c39-4399-a0d6-179eebd1ed1f",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"let idFirstComment = jsonData.data.addComment.id;",
+							"let firstComment = jsonData.data.addComment.text;",
+							"",
+							"pm.environment.set(\"id_firstComment\", idFirstComment);",
+							"pm.environment.set(\"firstComment\", firstComment );",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"pm.test(\"Verify first comment stored\", function () {",
+							"    pm.expect(firstComment).to.eql(pm.environment.get(\"firstComment\"));",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation addComment($comment: CommentInput!){\n  addComment(comment: $comment){\n    id\n    text\n  }\n}",
+						"variables": "{\n  \"comment\": {\n    \"text\": \"comment test\",\n    \"todoId\": \"{{id_todo}}\"\n  }\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AddSecondComment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "d1aed0aa-1650-4f48-9aff-0a45d919bd6e",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"let idSecondComment = jsonData.data.addComment.id;",
+							"let secondComment = jsonData.data.addComment.text;",
+							"",
+							"pm.environment.set(\"id_secondComment\", idSecondComment);",
+							"pm.environment.set(\"secondComment\", secondComment );",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"pm.test(\"Verify second comment stored\", function () {",
+							"    pm.expect(secondComment).to.eql(pm.environment.get(\"secondComment\"));",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation addComment($comment: CommentInput!){\n  addComment(comment: $comment){\n    id\n    text\n  }\n}",
+						"variables": "{\n  \"comment\": {\n    \"text\": \"Second comment\",\n    \"todoId\": \"{{id_todo}}\"\n  }\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "DeleteComment",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "8b9ffdf1-56a0-4d3b-aadb-2d8af2a7c45c",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"let deleteComment = jsonData.data.deleteComment;",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"pm.test(\"Verify comment deleted\", function () {",
+							"    pm.expect(deleteComment ).to.eql(true);",
+							"});",
+							"",
+							"pm.environment.unset(\"id_secondComment\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation deleteComment {\n    deleteComment(commentId:\"{{id_secondComment}}\")\n}",
+						"variables": ""
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "UpdateTodoStatus",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "bc80561c-5ab4-428c-9b7d-e9e0d2a30409",
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"let todo_status = jsonData.data.updateTodo.status;",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"pm.test(\"Verify todo status updated\", function () {",
+							"    pm.expect(todo_status).to.eql(\"COMPLETED\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "mutation updateTodoStatus($Status:Status){\n    updateTodo(todoId: \"{{id_todo}}\", status: $Status){\n        id,\n        todo,\n        status\n    }\n}",
+						"variables": "{\n\t\"Status\": \"COMPLETED\"\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "ListTodos",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "4e4a666d-03f2-41ad-96cd-f11a6424e032",
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response time is less than 200ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);",
+							"});",
+							"",
+							"var jsonData = pm.response.json();",
+							"",
+							"const todo_status = jsonData.data.listTodos;",
+							"",
+							"pm.test(\"Verify all Todos have 'COMPLETED' status\", function () {",
+							"    for(let i=0; i < todo_status.length; i++){",
+							"         pm.expect(todo_status[i].status).not.eql(\"PENDING\");",
+							"    }",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "graphql",
+					"graphql": {
+						"query": "query($showCompleted: Boolean){\n  listTodos(projectId: \"{{id_project}}\", showCompleted: $showCompleted){\n    id\n    todo\n    status\n  }\n}",
+						"variables": "{\n\t\"showCompleted\": true\n}"
+					}
+				},
+				"url": {
+					"raw": "{{url}}",
+					"host": [
+						"{{url}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "QA2020",
+				"type": "string"
+			}
+		]
+	},
+	"protocolProfileBehavior": {}
+}
